@@ -14,13 +14,15 @@ public class SecurityEvent {
 	private String id;
 	private String grade;	// CRITICAL, HIGH, MEDIUM, LOW
 	private String message;
+	private String orgId;
 	private long timestamp;
 
-	public static SecurityEvent of(String id, String grade, String message) {
+	public static SecurityEvent of(String id, String grade, String message, String orgId) {
 		return SecurityEvent.builder()
 			.id(id)
 			.grade(grade)
 			.message(message)
+			.orgId(orgId)
 			.timestamp(System.currentTimeMillis())
 			.build();
 	}
