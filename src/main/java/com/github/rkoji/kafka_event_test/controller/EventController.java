@@ -1,14 +1,20 @@
 package com.github.rkoji.kafka_event_test.controller;
 
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.github.rkoji.kafka_event_test.consumer.EventConsumer;
 import com.github.rkoji.kafka_event_test.model.SecurityEvent;
 import com.github.rkoji.kafka_event_test.producer.EventProducer;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -20,24 +26,28 @@ public class EventController {
 
 	// 단건 이벤트 발송
 	@PostMapping
-	public String send(@RequestParam String grade,
-		@RequestParam String message) {
-		SecurityEvent event = SecurityEvent.of(UUID.randomUUID().toString(), grade, message);
+	public String send(
+		@RequestParam String grade,
+		@RequestParam String message,
+		@RequestParam String orgId) {
+		SecurityEvent event = SecurityEvent.of(UUID.randomUUID().toString(), grade, message, orgId);
 		eventProducer.send(event);
 		return "sent: " + event.getId();
 	}
 
 	// Kafka 비동기 방식 (After)
 	@PostMapping("/bulk")
-	public Map<String, Object> bulk(@RequestParam String grade,
-		@RequestParam int count) {
+	public Map<String, Object> bulk(
+		@RequestParam String grade,
+		@RequestParam int count,
+		@RequestParam String orgId) {
 		EventConsumer.totalReceived.set(0);
 		EventConsumer.totalProcessed.set(0);
 
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
 			SecurityEvent event = SecurityEvent.of(
-				UUID.randomUUID().toString(), grade, "bulk-test-" + i
+				UUID.randomUUID().toString(), grade, "bulk-test-" + i, orgId
 			);
 			eventProducer.send(event);
 		}
@@ -59,9 +69,9 @@ public class EventController {
 			try {
 				long delay = switch (grade) {
 					case "CRITICAL" -> 50L;
-					case "HIGH"     -> 100L;
-					case "MEDIUM"   -> 200L;
-					default         -> 300L;
+					case "HIGH" -> 100L;
+					case "MEDIUM" -> 200L;
+					default -> 300L;
 				};
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
