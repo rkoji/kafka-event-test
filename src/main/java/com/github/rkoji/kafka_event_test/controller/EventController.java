@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class EventController {
 	public String send(
 		@RequestParam String grade,
 		@RequestParam String message,
-		@RequestParam String orgId) {
+		@RequestHeader("X-Org-Id") String orgId) {
 		SecurityEvent event = SecurityEvent.of(UUID.randomUUID().toString(), grade, message, orgId);
 		eventProducer.send(event);
 		return "sent: " + event.getId();
@@ -40,7 +41,7 @@ public class EventController {
 	public Map<String, Object> bulk(
 		@RequestParam String grade,
 		@RequestParam int count,
-		@RequestParam String orgId) {
+		@RequestHeader("X-Org-Id") String orgId) {
 		EventConsumer.totalReceived.set(0);
 		EventConsumer.totalProcessed.set(0);
 
