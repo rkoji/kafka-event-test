@@ -14,10 +14,10 @@ public class TaskDecoratorConfig {
 	@Bean
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(5);
-		executor.setMaxPoolSize(10);
-		executor.setQueueCapacity(100);
-		executor.setThreadNamePrefix("async-executor-");
+		executor.setCorePoolSize(5); // 기본 스레드 5개 항상 대기
+		executor.setMaxPoolSize(10); // 최대 10개까지 늘릴 수 있음
+		executor.setQueueCapacity(100); // 스레드 10개 다 차면 100개까지 대기열
+		executor.setThreadNamePrefix("async-executor-"); // 스레드 이름 (로그에서 보임)
 		executor.setTaskDecorator(contextCopyingDecorator());
 		executor.initialize();
 		return executor;
