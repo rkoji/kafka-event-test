@@ -5,7 +5,7 @@
 Kafka 토픽을 분리하고 처리 방식을 차별화한 시스템
 
 ## 기술 스택
-Java 17, Spring Boot 3.x, Apache Kafka, Docker
+Java 17, Spring Boot 4.0.3, Apache Kafka, Docker
 
 ## 핵심 구현
 - 위험도별 동기/비동기 처리 차별화
