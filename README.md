@@ -7,7 +7,7 @@
 
 ## 기술 스택
 
-- Java 17
+- Java 21
 - Spring Boot 4.0.3
 - Apache Kafka
 - Docker / Docker Compose
